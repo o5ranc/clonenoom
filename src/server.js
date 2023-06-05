@@ -20,12 +20,20 @@ const handleListen = () => console.log("Listening on http://localhost://3000");
 const server = http.createServer(app);
 const wss = new WebSocket.Server({server}); // 서버에 웹소켓 프로토콜을 추가하기 위함
 
-function handleConnection(socket) {
-    console.log(socket);
-}
-
 // 기다렸다가 connection 이벤트 발생시 handleConnection 호출
-wss.on("connection", handleConnection);
+wss.on("connection", (socket) => {
+    // console.log(socket);
+    console.log("Connected to Browser"); // 서버용 로그(터미널창)
+
+    socket.on("message", (message) => {
+        console.log(`${message}`);
+    })
+
+    socket.on("close", () => {
+        console.log("Disconnected from Browser");
+        socket.send("hello!");
+    })
+});
 
 // app.listen(3000, handleListen)
 server.listen(3000, handleListen);
